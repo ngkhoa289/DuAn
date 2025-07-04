@@ -4,216 +4,678 @@
   <meta charset="UTF-8">
   <title>Chi tiết sản phẩm</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #64748b;
+      --success-color: #059669;
+      --warning-color: #d97706;
+      --danger-color: #dc2626;
+      --sidebar-bg: #f8fafc;
+      --border-color: #e2e8f0;
+    }
+
     body {
       display: flex;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f1f5f9;
+      margin: 0;
     }
+
     .sidebar {
-      width: 250px;
+      width: 280px;
       height: 100vh;
-      background-color: #f8f9fa;
-      padding-top: 20px;
-      border-right: 1px solid #dee2e6;
+      background: linear-gradient(135deg, var(--sidebar-bg) 0%, #ffffff 100%);
+      border-right: 2px solid var(--border-color);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+      position: fixed;
+      overflow-y: auto;
     }
-    .sidebar a {
-      display: block;
-      padding: 10px 20px;
-      color: #333;
+
+    .sidebar-header {
+      padding: 25px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .sidebar-header h4 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      padding: 12px 25px;
+      color: var(--secondary-color);
       text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-weight: 500;
     }
-    .sidebar a:hover {
-      background-color: #e9ecef;
+
+    .sidebar-nav a:hover {
+      background-color: #e2e8f0;
+      color: var(--primary-color);
+      border-left-color: var(--primary-color);
+      transform: translateX(5px);
     }
+
+    .sidebar-nav a.active {
+      background-color: #dbeafe;
+      color: var(--primary-color);
+      border-left-color: var(--primary-color);
+    }
+
+    .sidebar-nav a i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
     .content {
       flex-grow: 1;
+      margin-left: 280px;
       padding: 30px;
+      min-height: 100vh;
     }
-    .product-info {
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
+
+    .page-header {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
       margin-bottom: 30px;
+      border-left: 4px solid var(--primary-color);
     }
-    .variant-form {
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #dee2e6;
+
+    .page-title {
+      margin: 0;
+      color: #1e293b;
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    .breadcrumb-custom {
+      background: none;
+      padding: 0;
+      margin: 8px 0 0 0;
+    }
+
+    .breadcrumb-custom .breadcrumb-item a {
+      color: var(--secondary-color);
+      text-decoration: none;
+    }
+
+    .breadcrumb-custom .breadcrumb-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-card-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+      color: white;
+      padding: 20px 25px;
+      border-bottom: none;
+    }
+
+    .info-card-header h5 {
+      margin: 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .info-card-header i {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+
+    .info-card-body {
+      padding: 25px;
+    }
+
+    .info-item {
+      margin-bottom: 15px;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--secondary-color);
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      color: #1e293b;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+      border: 1px solid var(--border-color);
+    }
+
+    .form-card-header {
+      background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
+      color: white;
+      padding: 20px 25px;
+      border-bottom: none;
+    }
+
+    .form-card-body {
+      padding: 25px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid var(--border-color);
       border-radius: 8px;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+    }
+
+    .table-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .table-card-header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      padding: 20px 25px;
+      border-bottom: none;
+    }
+
+    .table-responsive {
+      border-radius: 0 0 12px 12px;
+    }
+
+    .table {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .table thead th {
+      background-color: #f8fafc;
+      border-bottom: 2px solid var(--border-color);
+      color: var(--secondary-color);
+      font-weight: 600;
+      padding: 15px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .table tbody td {
+      padding: 15px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .badge-color {
+      background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+      color: white;
+    }
+
+    .badge-size {
+      background: linear-gradient(135deg, var(--secondary-color) 0%, #475569 100%);
+      color: white;
+    }
+
+    .price-display {
+      font-weight: 700;
+      color: var(--success-color);
+      font-size: 1.1rem;
+    }
+
+    .quantity-display {
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .quantity-high {
+      background-color: #dcfce7;
+      color: var(--success-color);
+    }
+
+    .quantity-medium {
+      background-color: #fef3c7;
+      color: var(--warning-color);
+    }
+
+    .quantity-low {
+      background-color: #fee2e2;
+      color: var(--danger-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--secondary-color);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
       margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .stats-row {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: var(--secondary-color);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .required {
+      color: var(--danger-color);
+    }
+
+    .code-display {
+      background-color: #f1f5f9;
+      color: #475569;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .content {
+        margin-left: 0;
+        padding: 20px;
+      }
+      
+      .page-header {
+        padding: 20px;
+      }
+      
+      .info-card-body, .form-card-body {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-<div class="sidebar">
-  <a th:href="@{/san-pham}">Sản phẩm</a>
-  <a th:href="@{/thuoc-tinh}">Thuộc tính</a>
-</div>
-
-<div class="content">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>Chi tiết sản phẩm: <span th:text="${sanPham.tenSanPham}" class="text-primary"></span></h3>
-    <a th:href="@{/san-pham}" class="btn btn-secondary">← Quay lại danh sách</a>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h4><i class="bi bi-shop"></i> Quản lý cửa hàng</h4>
+    </div>
+    <nav class="sidebar-nav">
+      <a th:href="@{/san-pham}">
+        <i class="bi bi-box-seam"></i>
+        Sản phẩm
+      </a>
+      <a th:href="@{/thuoc-tinh}">
+        <i class="bi bi-tags"></i>
+        Thuộc tính
+      </a>
+    </nav>
   </div>
 
-  <!-- Thông tin sản phẩm -->
-  <div class="product-info">
-    <h5 class="mb-3">Thông tin sản phẩm</h5>
-    <div class="row g-3">
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Mã sản phẩm:</label>
-        <p th:text="${sanPham.maSP}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Danh mục:</label>
-        <p th:text="${danhMuc}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Thương hiệu:</label>
-        <p th:text="${thuongHieu}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Chất liệu:</label>
-        <p th:text="${chatLieu}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Đế giày:</label>
-        <p th:text="${deGiay}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Cổ giày:</label>
-        <p th:text="${coGiay}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Khối lượng:</label>
-        <p th:text="${khoiLuong}" class="mb-0"></p>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Xuất xứ:</label>
-        <p th:text="${xuatXu}" class="mb-0"></p>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label fw-bold">Nhà sản xuất:</label>
-        <p th:text="${nsx}" class="mb-0"></p>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label fw-bold">Đợt giảm giá:</label>
-        <p th:text="${dotGiamGia}" class="mb-0"></p>
-      </div>
-      <div class="col-md-12">
-        <label class="form-label fw-bold">Mô tả:</label>
-        <p th:text="${sanPham.moTa}" class="mb-0"></p>
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">
+        <i class="bi bi-box-seam"></i>
+        Chi tiết sản phẩm: <span th:text="${sanPham.tenSanPham}" class="text-primary"></span>
+      </h1>
+      <nav class="breadcrumb-custom">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a th:href="@{/san-pham}">Sản phẩm</a></li>
+          <li class="breadcrumb-item active">Chi tiết sản phẩm</li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="stats-row">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(listChiTiet)}">0</div>
+            <div class="stat-label">Tổng biến thể</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <div class="stat-number" th:text="${#aggregates.sum(listChiTiet.![soLuong])}">0</div>
+            <div class="stat-label">Tổng số lượng</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(listChiTiet.?[trangThai == 1])}">0</div>
+            <div class="stat-label">Đang bán</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(listChiTiet.?[soLuong <= 5])}">0</div>
+            <div class="stat-label">Sắp hết hàng</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Form thêm biến thể -->
-  <div class="variant-form">
-    <h5 class="mb-3">Thêm biến thể sản phẩm</h5>
-    <form th:action="@{/chi-tiet-san-pham/save}" method="post">
-      <input type="hidden" name="sanPham.id" th:value="${sanPham.id}" />
-
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label">Màu sắc <span class="text-danger">*</span></label>
-          <select class="form-select" name="mauSac.id" required>
-            <option value="">-- Chọn màu sắc --</option>
-            <option th:each="ms : ${listMauSac}" th:value="${ms.id}" th:text="${ms.tenMau}"></option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Kích thước <span class="text-danger">*</span></label>
-          <select class="form-select" name="kichThuoc.id" required>
-            <option value="">-- Chọn kích thước --</option>
-            <option th:each="kt : ${listKichThuoc}" th:value="${kt.id}" th:text="${kt.size}"></option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Đơn giá (VNĐ) <span class="text-danger">*</span></label>
-          <input type="number" class="form-control" name="donGia" min="0" step="1000" required />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Số lượng <span class="text-danger">*</span></label>
-          <input type="number" class="form-control" name="soLuong" min="0" required />
-        </div>
-        <div class="col-md-12">
-          <label class="form-label">Ghi chú</label>
-          <input type="text" class="form-control" name="ghiChu" placeholder="Ghi chú thêm về biến thể..." />
+    <!-- Product Information -->
+    <div class="info-card">
+      <div class="info-card-header">
+        <h5><i class="bi bi-info-circle"></i> Thông tin sản phẩm</h5>
+      </div>
+      <div class="info-card-body">
+        <div class="row g-4">
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Mã sản phẩm</div>
+              <div class="info-value">
+                <span class="code-display" th:text="${sanPham.maSP}"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Danh mục</div>
+              <div class="info-value" th:text="${danhMuc}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Thương hiệu</div>
+              <div class="info-value" th:text="${thuongHieu}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Chất liệu</div>
+              <div class="info-value" th:text="${chatLieu}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Đế giày</div>
+              <div class="info-value" th:text="${deGiay}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Cổ giày</div>
+              <div class="info-value" th:text="${coGiay}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Khối lượng</div>
+              <div class="info-value" th:text="${khoiLuong}"></div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info-item">
+              <div class="info-label">Xuất xứ</div>
+              <div class="info-value" th:text="${xuatXu}"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-item">
+              <div class="info-label">Nhà sản xuất</div>
+              <div class="info-value" th:text="${nsx}"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-item">
+              <div class="info-label">Đợt giảm giá</div>
+              <div class="info-value" th:text="${dotGiamGia}"></div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="info-item">
+              <div class="info-label">Mô tả</div>
+              <div class="info-value" th:text="${sanPham.moTa ?: 'Chưa có mô tả'}"></div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="mt-3">
-        <button type="submit" class="btn btn-success">
-          <i class="bi bi-plus-circle"></i> Thêm biến thể
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Danh sách biến thể -->
-  <div class="card">
-    <div class="card-header">
-      <h5 class="mb-0">Danh sách biến thể (<span th:text="${#lists.size(listChiTiet)}"></span> biến thể)</h5>
     </div>
-    <div class="card-body p-0">
+
+    <!-- Add Variant Form -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h5><i class="bi bi-plus-circle"></i> Thêm biến thể sản phẩm</h5>
+      </div>
+      <div class="form-card-body">
+        <form th:action="@{/chi-tiet-san-pham/save}" method="post">
+          <input type="hidden" name="sanPham.id" th:value="${sanPham.id}" />
+
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Màu sắc <span class="required">*</span></label>
+              <select class="form-select" name="mauSac.id" required>
+                <option value="">-- Chọn màu sắc --</option>
+                <option th:each="ms : ${listMauSac}" th:value="${ms.id}" th:text="${ms.tenMau}"></option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Kích thước <span class="required">*</span></label>
+              <select class="form-select" name="kichThuoc.id" required>
+                <option value="">-- Chọn kích thước --</option>
+                <option th:each="kt : ${listKichThuoc}" th:value="${kt.id}" th:text="${kt.size}"></option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Đơn giá (VNĐ) <span class="required">*</span></label>
+              <input type="number" class="form-control" name="donGia" min="0" step="1000" placeholder="Nhập giá bán" required />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Số lượng <span class="required">*</span></label>
+              <input type="number" class="form-control" name="soLuong" min="0" placeholder="Nhập số lượng" required />
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Ghi chú</label>
+              <input type="text" class="form-control" name="ghiChu" placeholder="Ghi chú thêm về biến thể..." />
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-plus-circle"></i> Thêm biến thể
+            </button>
+            <a th:href="@{/san-pham}" class="btn btn-secondary">
+              <i class="bi bi-arrow-left"></i> Quay lại danh sách
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Variants Table -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <h5><i class="bi bi-list-ul"></i> Danh sách biến thể sản phẩm</h5>
+      </div>
       <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-          <tr>
-            <th>Mã CTSP</th>
-            <th>Tên biến thể</th>
-            <th>Màu sắc</th>
-            <th>Kích thước</th>
-            <th>Giá bán</th>
-            <th>Số lượng</th>
-            <th>Ghi chú</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-          </tr>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Mã CTSP</th>
+              <th>Tên biến thể</th>
+              <th>Màu sắc</th>
+              <th>Kích thước</th>
+              <th>Giá bán</th>
+              <th>Số lượng</th>
+              <th>Ghi chú</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
           </thead>
           <tbody>
-          <tr th:each="ct : ${listChiTiet}">
-            <td>
-              <code th:text="${ct.maCTSP}"></code>
-            </td>
-            <td th:text="${ct.tenCTSP}"></td>
-            <td>
-              <span class="badge bg-info" th:text="${ct.mauSac?.tenMau}"></span>
-            </td>
-            <td>
-              <span class="badge bg-secondary" th:text="${ct.kichThuoc?.size}"></span>
-            </td>
-            <td>
-              <strong th:text="${#numbers.formatDecimal(ct.donGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
-            </td>
-            <td>
-              <span th:text="${ct.soLuong}" 
-                    th:class="${ct.soLuong > 10 ? 'text-success fw-bold' : (ct.soLuong > 0 ? 'text-warning fw-bold' : 'text-danger fw-bold')}"></span>
-            </td>
-            <td th:text="${ct.ghiChu}"></td>
-            <td>
-              <span class="badge bg-success" th:if="${ct.trangThai == 1}">Còn bán</span>
-              <span class="badge bg-secondary" th:if="${ct.trangThai != 1}">Ngừng bán</span>
-            </td>
-            <td>
-              <a th:href="@{'/chi-tiet-san-pham/delete/' + ${ct.id}}" 
-                 class="btn btn-sm btn-outline-danger"
-                 onclick="return confirm('Bạn chắc chắn muốn xóa biến thể này?')">
-                <i class="bi bi-trash"></i> Xóa
-              </a>
-            </td>
-          </tr>
-          <tr th:if="${#lists.isEmpty(listChiTiet)}">
-            <td colspan="9" class="text-center text-muted py-4">
-              <i class="bi bi-inbox"></i> Chưa có biến thể nào cho sản phẩm này
-            </td>
-          </tr>
+            <tr th:each="ct : ${listChiTiet}">
+              <td>
+                <span class="code-display" th:text="${ct.maCTSP}"></span>
+              </td>
+              <td>
+                <strong th:text="${ct.tenCTSP}"></strong>
+              </td>
+              <td>
+                <span class="badge badge-color" th:text="${ct.mauSac?.tenMau}"></span>
+              </td>
+              <td>
+                <span class="badge badge-size" th:text="${ct.kichThuoc?.size}"></span>
+              </td>
+              <td>
+                <span class="price-display" th:text="${#numbers.formatDecimal(ct.donGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+              </td>
+              <td>
+                <span th:text="${ct.soLuong}" 
+                      th:class="${ct.soLuong > 10 ? 'quantity-display quantity-high' : (ct.soLuong > 5 ? 'quantity-display quantity-medium' : 'quantity-display quantity-low')}"></span>
+              </td>
+              <td>
+                <span th:text="${ct.ghiChu ?: '-'}" class="text-muted"></span>
+              </td>
+              <td>
+                <span class="badge bg-success" th:if="${ct.trangThai == 1}">
+                  <i class="bi bi-check-circle"></i> Còn bán
+                </span>
+                <span class="badge bg-secondary" th:if="${ct.trangThai != 1}">
+                  <i class="bi bi-x-circle"></i> Ngừng bán
+                </span>
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <a th:href="@{'/chi-tiet-san-pham/edit/' + ${ct.id}}" 
+                     class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a th:href="@{'/chi-tiet-san-pham/delete/' + ${ct.id}}" 
+                     class="btn btn-sm btn-outline-danger"
+                     onclick="return confirm('Bạn chắc chắn muốn xóa biến thể này?')" title="Xóa">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(listChiTiet)}">
+              <td colspan="9">
+                <div class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <h5>Chưa có biến thể nào</h5>
+                  <p class="text-muted">Hãy thêm biến thể đầu tiên cho sản phẩm này</p>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
