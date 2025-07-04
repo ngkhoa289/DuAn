@@ -25,4 +25,12 @@ public class ChiTietSanPhamService {
     public void delete(Long id) {
         repo.deleteById(id);
     }
+
+    public ChiTietSanPham getById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    public List<ChiTietSanPham> getAll() {
+        return repo.findAll();
+    }
 }

@@ -19,7 +19,6 @@ public class ChiTietSanPhamController {
     private final SanPhamService sanPhamService;
     private final ThuocTinhService thuocTinhService;
 
-
     public ChiTietSanPhamController(ChiTietSanPhamService ctspService,
                                     SanPhamService sanPhamService,
                                     ThuocTinhService thuocTinhService) {
@@ -28,12 +27,31 @@ public class ChiTietSanPhamController {
         this.thuocTinhService = thuocTinhService;
     }
 
-
     @PostMapping("/save")
     public String save(@ModelAttribute ChiTietSanPham chiTietSanPham) {
+        // Auto-generate MaCTSP if not provided
+        if (chiTietSanPham.getMaCTSP() == null || chiTietSanPham.getMaCTSP().isEmpty()) {
+            String maCTSP = "CTSP" + String.format("%03d", System.currentTimeMillis() % 1000);
+            chiTietSanPham.setMaCTSP(maCTSP);
+        }
+        
+        // Auto-generate TenCTSP if not provided
+        if (chiTietSanPham.getTenCTSP() == null || chiTietSanPham.getTenCTSP().isEmpty()) {
+            String tenSP = chiTietSanPham.getSanPham().getTenSanPham();
+            String mauSac = chiTietSanPham.getMauSac().getTenMau();
+            String kichThuoc = chiTietSanPham.getKichThuoc().getSize().toString();
+            chiTietSanPham.setTenCTSP(tenSP + " - " + mauSac + " - " + kichThuoc);
+        }
+        
+        // Set default status if not provided
+        if (chiTietSanPham.getTrangThai() == null) {
+            chiTietSanPham.setTrangThai(1);
+        }
+        
         ctspService.save(chiTietSanPham);
         return "redirect:/chi-tiet-san-pham/" + chiTietSanPham.getSanPham().getId();
     }
+
     @GetMapping("/{id}")
     public String viewChiTietSanPhamTheoSP(@PathVariable Long id, Model model) {
         SanPham sp = sanPhamService.getById(id);
@@ -58,9 +76,14 @@ public class ChiTietSanPhamController {
         model.addAttribute("nsx", sp.getNsx() != null ? sp.getNsx().getTenNSX() : "");
         model.addAttribute("dotGiamGia", sp.getDotGiamGia() != null ? sp.getDotGiamGia().getTenDot() : "");
 
-
-        return "chi_tiet_san_pham/view"; // Tạo file mới: view.html
+        return "chi_tiet_san_pham/view";
     }
 
-
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        ChiTietSanPham ctsp = ctspService.getById(id);
+        Long sanPhamId = ctsp.getSanPham().getId();
+        ctspService.delete(id);
+        return "redirect:/chi-tiet-san-pham/" + sanPhamId;
+    }
 }
