@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi tiết sản phẩm</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h3 class="mb-4">Chi tiết sản phẩm: <span th:text="${sanPham.tenSanPham}"></span></h3>
+
+  <form th:action="@{/san-pham/save}" method="post">
+    <input type="hidden" name="id" th:value="${sanPham.id}"/>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label>Danh mục</label>
+        <input class="form-control" th:value="${danhMuc}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Hãng</label>
+        <input class="form-control" th:value="${thuongHieu}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Chất liệu</label>
+        <input class="form-control" th:value="${chatLieu}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Đế giày</label>
+        <input class="form-control" th:value="${deGiay}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Cổ giày</label>
+        <input class="form-control" th:value="${coGiay}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Khối lượng</label>
+        <input class="form-control" th:value="${khoiLuong}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Xuất xứ</label>
+        <input class="form-control" th:value="${xuatXu}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Nhà sản xuất</label>
+        <input class="form-control" th:value="${nsx}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Đợt giảm giá</label>
+        <input class="form-control" th:value="${dotGiamGia}" readonly>
+      </div>
+      <div class="col-md-12">
+        <label>Mô tả</label>
+        <textarea class="form-control" name="moTa" th:text="${sanPham.moTa}"></textarea>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+      <a th:href="@{/san-pham}" class="btn btn-secondary">Quay lại</a>
+    </div>
+  </form>
+
+  <hr class="my-4">
+
+  <h5>Biến thể sản phẩm</h5>
+  <form th:action="@{/chi-tiet-san-pham/save}" method="post">
+    <input type="hidden" name="sanPham.id" th:value="${sanPham.id}" />
+
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label>Màu sắc</label>
+        <select class="form-control" name="mauSac.id">
+          <option th:each="ms : ${listMauSac}" th:value="${ms.id}" th:text="${ms.tenMau}"></option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Kích thước</label>
+        <select class="form-control" name="kichThuoc.id">
+          <option th:each="kt : ${listKichThuoc}" th:value="${kt.id}" th:text="${kt.size}"></option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Đơn giá</label>
+        <input type="number" class="form-control" name="donGia" required />
+      </div>
+      <div class="col-md-3">
+        <label>Số lượng</label>
+        <input type="number" class="form-control" name="soLuong" required />
+      </div>
+      <div class="col-md-12">
+        <label>Ghi chú</label>
+        <input type="text" class="form-control" name="ghiChu" />
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success">Thêm biến thể</button>
+    </div>
+  </form>
+
+  <table class="table table-bordered table-hover mt-4">
+    <thead class="table-light">
+    <tr>
+      <th>Mã CTSP</th>
+      <th>Màu sắc</th>
+      <th>Kích thước</th>
+      <th>Giá</th>
+      <th>Số lượng</th>
+      <th>Ghi chú</th>
+      <th>Trạng thái</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ct : ${listChiTiet}">
+      <td th:text="${ct.maCTSP}">CT01</td>
+      <td th:text="${ct.mauSac?.tenMau}">Đỏ</td>
+      <td th:text="${ct.kichThuoc?.size}">42</td>
+      <td th:text="${ct.donGia}">100000</td>
+      <td th:text="${ct.soLuong}">5</td>
+      <td th:text="${ct.ghiChu}">Chi tiết</td>
+      <td>
+        <span class="badge bg-success" th:if="${ct.trangThai == 1}">Còn bán</span>
+        <span class="badge bg-secondary" th:if="${ct.trangThai != 1}">Ngừng bán</span>
+      </td>
+      <td>
+        <a th:href="@{'/chi-tiet-san-pham/delete/' + ${ct.id}}" class="btn btn-sm btn-outline-danger"
+           onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
