@@ -4,146 +4,1012 @@
     <meta charset="UTF-8">
     <title>Quản lý thuộc tính</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --info-color: #0891b2;
+            --sidebar-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
         body {
             display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
         }
+
         .sidebar {
-            width: 250px;
+            width: 280px;
             height: 100vh;
-            background-color: #f8f9fa;
-            padding-top: 20px;
-            border-right: 1px solid #dee2e6;
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px 20px;
-            color: #333;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background-color: #e9ecef;
-        }
-        .content {
-            flex-grow: 1;
-            padding: 30px;
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, #ffffff 100%);
+            border-right: 2px solid var(--border-color);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: fixed;
             overflow-y: auto;
         }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav a.active {
+            background-color: #dbeafe;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .sidebar-nav a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .content {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .page-title {
+            margin: 0;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 12px;
+            color: var(--primary-color);
+        }
+
+        .attribute-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .attribute-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            position: relative;
+        }
+
+        .attribute-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .attribute-header i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .attribute-header .badge {
+            margin-left: auto;
+            font-size: 0.8rem;
+        }
+
+        /* Color coding for different attribute types */
+        .attr-danh-muc .attribute-header { background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); color: white; }
+        .attr-hang .attribute-header { background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%); color: white; }
+        .attr-chat-lieu .attribute-header { background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%); color: white; }
+        .attr-de-giay .attribute-header { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: white; }
+        .attr-co-giay .attribute-header { background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%); color: white; }
+        .attr-khoi-luong .attribute-header { background: linear-gradient(135deg, var(--info-color) 0%, #06b6d4 100%); color: white; }
+        .attr-xuat-xu .attribute-header { background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); color: white; }
+        .attr-nsx .attribute-header { background: linear-gradient(135deg, #84cc16 0%, #22c55e 100%); color: white; }
+        .attr-hinh-anh .attribute-header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; }
+        .attr-mau-sac .attribute-header { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white; }
+        .attr-kich-thuoc .attribute-header { background: linear-gradient(135deg, var(--secondary-color) 0%, #475569 100%); color: white; }
+        .attr-dot-giam-gia .attribute-header { background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; }
+
+        .attribute-body {
+            padding: 25px;
+        }
+
+        .add-form {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .items-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #1e293b;
+            flex-grow: 1;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #ef4444 100%);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--secondary-color);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--secondary-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
         .form-inline {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: end;
         }
-        h4 {
-            margin-top: 30px;
+
+        .form-inline .form-control,
+        .form-inline .form-select {
+            flex: 1;
+        }
+
+        .form-inline .btn {
+            flex-shrink: 0;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+        }
+
+        .search-input input {
+            padding-left: 45px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .page-header {
+                padding: 20px;
+            }
+            
+            .attribute-body {
+                padding: 20px;
+            }
+            
+            .form-inline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-<div class="sidebar">
-    <a th:href="@{/san-pham}">Sản phẩm</a>
-    <a th:href="@{/thuoc-tinh}">Thuộc tính</a>
-</div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="bi bi-shop"></i> Quản lý cửa hàng</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/san-pham}">
+                <i class="bi bi-box-seam"></i>
+                Sản phẩm
+            </a>
+            <a th:href="@{/thuoc-tinh}" class="active">
+                <i class="bi bi-tags"></i>
+                Thuộc tính
+            </a>
+        </nav>
+    </div>
 
-<div class="content">
-    <h3>Quản lý thuộc tính</h3>
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-tags"></i>
+                    Quản lý thuộc tính sản phẩm
+                </h1>
+                <p class="text-muted mb-0">Quản lý các thuộc tính và danh mục cho sản phẩm</p>
+            </div>
+        </div>
 
-    <!-- Danh mục -->
-    <h4>Danh mục</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/danh-muc}">
-        <input type="text" name="ten" class="form-control" placeholder="Tên danh mục" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul>
-        <li th:each="item : ${listDanhMuc}">
-            <span th:text="${item.tenDanhMuc}"></span>
-            <a th:href="@{'/thuoc-tinh/delete/danh-muc/' + ${item.id}}" class="text-danger">[Xóa]</a>
-        </li>
-    </ul>
+        <!-- Alert messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 
-    <!-- Hãng -->
-    <h4>Hãng</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/hang}">
-        <input type="text" name="ten" class="form-control" placeholder="Tên hãng" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul>
-        <li th:each="item : ${listHang}">
-            <span th:text="${item.tenHang}"></span>
-            <a th:href="@{'/thuoc-tinh/delete/hang/' + ${item.id}}" class="text-danger">[Xóa]</a>
-        </li>
-    </ul>
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listDanhMuc)}">0</div>
+                <div class="stat-label">Danh mục</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listHang)}">0</div>
+                <div class="stat-label">Thương hiệu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listMauSac)}">0</div>
+                <div class="stat-label">Màu sắc</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listKichThuoc)}">0</div>
+                <div class="stat-label">Kích thước</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listChatLieu)}">0</div>
+                <div class="stat-label">Chất liệu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(listDotGiamGia)}">0</div>
+                <div class="stat-label">Đợt giảm giá</div>
+            </div>
+        </div>
 
-    <!-- Các loại thuộc tính khác -->
-    <h4>Chất liệu</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/chat-lieu}">
-        <input type="text" name="ten" class="form-control" placeholder="Chất liệu" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listChatLieu}"><span th:text="${item.loai}"></span> <a th:href="@{'/thuoc-tinh/delete/chat-lieu/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Search Box -->
+        <div class="search-box">
+            <div class="search-input">
+                <i class="bi bi-search"></i>
+                <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm thuộc tính..." onkeyup="filterAttributes()">
+            </div>
+        </div>
 
-    <h4>Đế giày</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/de-giay}">
-        <input type="text" name="ten" class="form-control" placeholder="Đế giày" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listDeGiay}"><span th:text="${item.tenDeGiay}"></span> <a th:href="@{'/thuoc-tinh/delete/de-giay/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Attribute Sections -->
+        
+        <!-- Danh mục -->
+        <div class="attribute-section attr-danh-muc fade-in" data-category="danh-muc">
+            <div class="attribute-header">
+                <h5><i class="bi bi-grid-3x3-gap"></i> Danh mục sản phẩm</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listDanhMuc)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/danh-muc}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên danh mục..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listDanhMuc)}">
+                    <div class="item-row" th:each="item : ${listDanhMuc}">
+                        <span class="item-name" th:text="${item.tenDanhMuc}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/danh-muc/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listDanhMuc)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có danh mục nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Cổ giày</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/co-giay}">
-        <input type="text" name="ten" class="form-control" placeholder="Cổ giày" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listCoGiay}"><span th:text="${item.tenCoGiay}"></span> <a th:href="@{'/thuoc-tinh/delete/co-giay/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Thương hiệu -->
+        <div class="attribute-section attr-hang fade-in" data-category="hang">
+            <div class="attribute-header">
+                <h5><i class="bi bi-award"></i> Thương hiệu</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listHang)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/hang}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên thương hiệu..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listHang)}">
+                    <div class="item-row" th:each="item : ${listHang}">
+                        <span class="item-name" th:text="${item.tenHang}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/hang/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa thương hiệu này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listHang)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có thương hiệu nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Khối lượng</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/khoi-luong}">
-        <input type="text" name="ten" class="form-control" placeholder="Khối lượng" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listKhoiLuong}"><span th:text="${item.tenKhoiLuong}"></span> <a th:href="@{'/thuoc-tinh/delete/khoi-luong/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Màu sắc -->
+        <div class="attribute-section attr-mau-sac fade-in" data-category="mau-sac">
+            <div class="attribute-header">
+                <h5><i class="bi bi-palette"></i> Màu sắc</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listMauSac)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/mau-sac}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên màu sắc..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listMauSac)}">
+                    <div class="item-row" th:each="item : ${listMauSac}">
+                        <span class="item-name" th:text="${item.tenMau}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/mau-sac/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa màu sắc này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listMauSac)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có màu sắc nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Xuất xứ</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/xuat-xu}">
-        <input type="text" name="ten" class="form-control" placeholder="Xuất xứ" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listXuatXu}"><span th:text="${item.noiXuatXu}"></span> <a th:href="@{'/thuoc-tinh/delete/xuat-xu/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Kích thước -->
+        <div class="attribute-section attr-kich-thuoc fade-in" data-category="kich-thuoc">
+            <div class="attribute-header">
+                <h5><i class="bi bi-rulers"></i> Kích thước</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listKichThuoc)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/kich-thuoc}">
+                        <div class="flex-grow-1">
+                            <input type="number" name="size" class="form-control" placeholder="Nhập size (VD: 36, 37, 38...)" min="30" max="50" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listKichThuoc)}">
+                    <div class="item-row" th:each="item : ${listKichThuoc}">
+                        <span class="item-name">Size <span th:text="${item.size}"></span></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/kich-thuoc/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa kích thước này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listKichThuoc)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có kích thước nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Nhà sản xuất</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/nsx}">
-        <input type="text" name="ten" class="form-control" placeholder="Nhà sản xuất" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listNSX}"><span th:text="${item.tenNSX}"></span> <a th:href="@{'/thuoc-tinh/delete/nsx/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Chất liệu -->
+        <div class="attribute-section attr-chat-lieu fade-in" data-category="chat-lieu">
+            <div class="attribute-header">
+                <h5><i class="bi bi-layers"></i> Chất liệu</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listChatLieu)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/chat-lieu}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập loại chất liệu..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listChatLieu)}">
+                    <div class="item-row" th:each="item : ${listChatLieu}">
+                        <span class="item-name" th:text="${item.loai}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/chat-lieu/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa chất liệu này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listChatLieu)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có chất liệu nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Hình ảnh</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/hinh-anh}">
-        <input type="text" name="ten" class="form-control" placeholder="Tên ảnh" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listHinhAnh}"><span th:text="${item.tenAnh}"></span> <a th:href="@{'/thuoc-tinh/delete/hinh-anh/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Đế giày -->
+        <div class="attribute-section attr-de-giay fade-in" data-category="de-giay">
+            <div class="attribute-header">
+                <h5><i class="bi bi-circle"></i> Đế giày</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listDeGiay)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/de-giay}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập loại đế giày..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listDeGiay)}">
+                    <div class="item-row" th:each="item : ${listDeGiay}">
+                        <span class="item-name" th:text="${item.tenDeGiay}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/de-giay/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa đế giày này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listDeGiay)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có đế giày nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Màu sắc</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/mau-sac}">
-        <input type="text" name="ten" class="form-control" placeholder="Tên màu" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listMauSac}"><span th:text="${item.tenMau}"></span> <a th:href="@{'/thuoc-tinh/delete/mau-sac/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Cổ giày -->
+        <div class="attribute-section attr-co-giay fade-in" data-category="co-giay">
+            <div class="attribute-header">
+                <h5><i class="bi bi-triangle"></i> Cổ giày</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listCoGiay)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/co-giay}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập loại cổ giày..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listCoGiay)}">
+                    <div class="item-row" th:each="item : ${listCoGiay}">
+                        <span class="item-name" th:text="${item.tenCoGiay}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/co-giay/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa cổ giày này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listCoGiay)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có cổ giày nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Kích thước</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/kich-thuoc}">
-        <input type="number" name="size" class="form-control" placeholder="Size" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listKichThuoc}"><span th:text="${item.size}"></span> <a th:href="@{'/thuoc-tinh/delete/kich-thuoc/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
+        <!-- Khối lượng -->
+        <div class="attribute-section attr-khoi-luong fade-in" data-category="khoi-luong">
+            <div class="attribute-header">
+                <h5><i class="bi bi-speedometer2"></i> Khối lượng</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listKhoiLuong)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/khoi-luong}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập khối lượng (VD: 300g, 400g...)" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listKhoiLuong)}">
+                    <div class="item-row" th:each="item : ${listKhoiLuong}">
+                        <span class="item-name" th:text="${item.tenKhoiLuong}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/khoi-luong/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa khối lượng này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listKhoiLuong)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có khối lượng nào</p>
+                </div>
+            </div>
+        </div>
 
-    <h4>Đợt giảm giá</h4>
-    <form class="form-inline mb-2" method="post" th:action="@{/thuoc-tinh/add/dot-giam-gia}">
-        <input type="text" name="ten" class="form-control" placeholder="Tên đợt giảm" required>
-        <input type="number" step="0.01" name="phanTram" class="form-control" placeholder="% giảm" required>
-        <button type="submit" class="btn btn-primary">Thêm</button>
-    </form>
-    <ul><li th:each="item : ${listDotGiamGia}"><span th:text="${item.tenDot} + ' (' + item.phanTramGiamGia + '%)'"></span> <a th:href="@{'/thuoc-tinh/delete/dot-giam-gia/' + ${item.id}}" class="text-danger">[Xóa]</a></li></ul>
-</div>
+        <!-- Xuất xứ -->
+        <div class="attribute-section attr-xuat-xu fade-in" data-category="xuat-xu">
+            <div class="attribute-header">
+                <h5><i class="bi bi-geo-alt"></i> Xuất xứ</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listXuatXu)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/xuat-xu}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập nơi xuất xứ..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listXuatXu)}">
+                    <div class="item-row" th:each="item : ${listXuatXu}">
+                        <span class="item-name" th:text="${item.noiXuatXu}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/xuat-xu/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa xuất xứ này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listXuatXu)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có xuất xứ nào</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nhà sản xuất -->
+        <div class="attribute-section attr-nsx fade-in" data-category="nsx">
+            <div class="attribute-header">
+                <h5><i class="bi bi-building"></i> Nhà sản xuất</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listNSX)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/nsx}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên nhà sản xuất..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listNSX)}">
+                    <div class="item-row" th:each="item : ${listNSX}">
+                        <span class="item-name" th:text="${item.tenNSX}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/nsx/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa nhà sản xuất này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listNSX)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có nhà sản xuất nào</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hình ảnh -->
+        <div class="attribute-section attr-hinh-anh fade-in" data-category="hinh-anh">
+            <div class="attribute-header">
+                <h5><i class="bi bi-image"></i> Hình ảnh</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listHinhAnh)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/hinh-anh}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên hình ảnh..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listHinhAnh)}">
+                    <div class="item-row" th:each="item : ${listHinhAnh}">
+                        <span class="item-name" th:text="${item.tenAnh}"></span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/hinh-anh/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa hình ảnh này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listHinhAnh)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có hình ảnh nào</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đợt giảm giá -->
+        <div class="attribute-section attr-dot-giam-gia fade-in" data-category="dot-giam-gia">
+            <div class="attribute-header">
+                <h5><i class="bi bi-percent"></i> Đợt giảm giá</h5>
+                <span class="badge bg-light text-dark" th:text="${#lists.size(listDotGiamGia)}">0</span>
+            </div>
+            <div class="attribute-body">
+                <div class="add-form">
+                    <form class="form-inline" method="post" th:action="@{/thuoc-tinh/add/dot-giam-gia}">
+                        <div class="flex-grow-1">
+                            <input type="text" name="ten" class="form-control" placeholder="Nhập tên đợt giảm giá..." required>
+                        </div>
+                        <div style="width: 150px;">
+                            <input type="number" step="0.01" name="phanTram" class="form-control" placeholder="% giảm" min="0" max="100" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Thêm
+                        </button>
+                    </form>
+                </div>
+                <div class="items-list" th:if="${not #lists.isEmpty(listDotGiamGia)}">
+                    <div class="item-row" th:each="item : ${listDotGiamGia}">
+                        <span class="item-name">
+                            <span th:text="${item.tenDot}"></span>
+                            <span class="badge bg-danger ms-2" th:text="${item.phanTramGiamGia} + '%'"></span>
+                        </span>
+                        <div class="item-actions">
+                            <a th:href="@{'/thuoc-tinh/delete/dot-giam-gia/' + ${item.id}}" 
+                               class="btn-delete"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa đợt giảm giá này?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(listDotGiamGia)}" class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Chưa có đợt giảm giá nào</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter attributes function
+        function filterAttributes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sections = document.querySelectorAll('.attribute-section');
+            
+            sections.forEach(section => {
+                const categoryName = section.querySelector('.attribute-header h5').textContent.toLowerCase();
+                const items = section.querySelectorAll('.item-name');
+                let hasVisibleItems = false;
+                
+                // Check if category name matches
+                const categoryMatches = categoryName.includes(searchTerm);
+                
+                // Check items
+                items.forEach(item => {
+                    const itemText = item.textContent.toLowerCase();
+                    const itemMatches = itemText.includes(searchTerm);
+                    
+                    if (itemMatches || categoryMatches) {
+                        item.closest('.item-row').style.display = 'flex';
+                        hasVisibleItems = true;
+                    } else {
+                        item.closest('.item-row').style.display = 'none';
+                    }
+                });
+                
+                // Show/hide entire section
+                if (categoryMatches || hasVisibleItems || searchTerm === '') {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Add loading state to forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                this.classList.add('loading');
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang xử lý...';
+                }
+            });
+        });
+
+        // Smooth scroll to section when clicking on stats
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            card.addEventListener('click', () => {
+                const sections = document.querySelectorAll('.attribute-section');
+                if (sections[index]) {
+                    sections[index].scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation delay to sections
+        document.querySelectorAll('.attribute-section').forEach((section, index) => {
+            section.style.animationDelay = `${index * 0.1}s`;
+        });
+    </script>
 </body>
 </html>
