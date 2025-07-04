@@ -14,15 +14,15 @@ public class ChiTietSanPham {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdSP")
     private SanPham sanPham;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdKichThuoc")
     private KichThuoc kichThuoc;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdMauSac")
     private MauSac mauSac;
 
@@ -42,8 +42,26 @@ public class ChiTietSanPham {
     private String ghiChu;
 
     @Column(name = "TrangThai")
-    private Integer trangThai;
+    private Integer trangThai = 1;
 
+    // Constructors
+    public ChiTietSanPham() {}
+
+    public ChiTietSanPham(SanPham sanPham, KichThuoc kichThuoc, MauSac mauSac, 
+                         String maCTSP, String tenCTSP, Integer soLuong, 
+                         Double donGia, String ghiChu, Integer trangThai) {
+        this.sanPham = sanPham;
+        this.kichThuoc = kichThuoc;
+        this.mauSac = mauSac;
+        this.maCTSP = maCTSP;
+        this.tenCTSP = tenCTSP;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+        this.ghiChu = ghiChu;
+        this.trangThai = trangThai;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
